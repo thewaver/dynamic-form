@@ -1,5 +1,9 @@
 import { Person } from "../../Abstracts/Person/types";
-import { ERROR_JOIN_CHAR, GLOBAL_ERROR_KEY } from "../Error/const";
+import {
+  ERROR_CONTEXT_SPLIT_CHAR,
+  ERROR_JOIN_CHAR,
+  GLOBAL_ERROR_KEY,
+} from "../Error/const";
 import { ApiErrorKey, ApiFieldError } from "../Error/types";
 import { mockApiCall } from "../utils";
 import { PERSON_CONFIG } from "./const";
@@ -48,6 +52,12 @@ class PersonAPI {
 
   validateField = <T>(fieldId: keyof Person, fieldValue: T) => {
     return new Promise<void>((resolve, reject) => {
+      if (!fieldValue) {
+        resolve();
+
+        return;
+      }
+
       mockApiCall(() => {
         switch (fieldId) {
           case "address": {
@@ -64,7 +74,9 @@ class PersonAPI {
 
           case "firstName": {
             if (!this.data.find((person) => person.firstName === fieldValue)) {
-              reject(`${fieldId}:${ApiErrorKey.ERR_NO_PERSON_WITH_FIRST_NAME}`);
+              reject(
+                `${fieldId}${ERROR_CONTEXT_SPLIT_CHAR}${ApiErrorKey.ERR_NO_PERSON_WITH_FIRST_NAME}`
+              );
 
               return;
             }
@@ -74,7 +86,9 @@ class PersonAPI {
 
           case "lastName": {
             if (!this.data.find((person) => person.lastName === fieldValue)) {
-              reject(`${fieldId}:${ApiErrorKey.ERR_NO_PERSON_WITH_LAST_NAME}`);
+              reject(
+                `${fieldId}${ERROR_CONTEXT_SPLIT_CHAR}${ApiErrorKey.ERR_NO_PERSON_WITH_LAST_NAME}`
+              );
 
               return;
             }
@@ -108,7 +122,7 @@ class PersonAPI {
         if (existingIdx === -1 && !upsert) {
           reject(
             new Error(
-              `${GLOBAL_ERROR_KEY}:${ApiErrorKey.ERR_PERSON_NOT_EXISTS}`
+              `${GLOBAL_ERROR_KEY}${ERROR_CONTEXT_SPLIT_CHAR}${ApiErrorKey.ERR_PERSON_NOT_EXISTS}`
             )
           );
 
