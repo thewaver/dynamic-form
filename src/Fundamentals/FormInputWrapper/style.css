@@ -1,0 +1,11 @@
+.form-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-input-wrapper > .form-input-label {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
